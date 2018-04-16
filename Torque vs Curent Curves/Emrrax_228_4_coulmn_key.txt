@@ -1,0 +1,4 @@
+column 1 = HV current
+column 2 = RPM
+column 3 = MV current
+column 4 = LV current

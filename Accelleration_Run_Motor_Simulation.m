@@ -30,12 +30,12 @@ currentAnswer = questdlg('Is Current vs. Torque Linear?');
 switch currentAnswer
     case 'Yes'
         torque_constant = inputdlg('Enter Torque Constant[Nm/A rms]');
-        delimiter = 1;
+        currentCurve = false;
         torque_constant = str2double(torque_constant);
     case 'No'
-        CTCurveFile = uigetfile('','Slect Motor Current vs Torque','*.csv');
-        motorCurrentCurve = csvread(TSCurveFile);
-        delimiter = 2;
+        [CTCurveFile,PathName] = uigetfile('','Slect Motor Current vs Torque','*.csv');
+        motorCurrentCurve = csvread(fullfile(PathName,CTCurveFile));
+        currentCurve = true;
 end
 
 BackEMF_constant = inputdlg('Enter Back EMF Constant [RPM/V rms]');
@@ -76,7 +76,16 @@ motor_torque(1,i) = motor(rpm_idx,2);
 f_motor(1,i) = (motor_torque(1,i)/(wdia/2))*powertrain_effeiency*gear_ratio;
 
 %Motor Electrical Calculations
-current(1,i) = motor_torque(1,i)/torque_constant;
+
+%If Current Curve Entered, Use Current Curve
+if currentCurve
+    current_idx = Closest(motorCurrentCurve(:,4),motor_torque(1,i));
+    current(1,i) = motorCurrentCurve(current_idx,4);
+else
+    current(1,i) = motor_torque(1,i)/torque_constant;
+end
+    
+
 EMF(1,i) = (motor_rpm(1,i)/BackEMF_constant)+(current(1,i)*winding_resistance);
 power(1,i) = EMF(1,i)*current(1,i); 
 battery_draw_power(1,i) = power(1,i)*(1/inverter_efficency);
