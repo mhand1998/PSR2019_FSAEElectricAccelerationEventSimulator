@@ -170,10 +170,17 @@ xlabel('Time (sec)')
 ylabel('Accumulator Power(W)')
 
 %%
-i = i + 1;
-
 filename = 'MotorSimulationData.xls';
-xlswrite(filename,cellstr(TSCurveFile),'A1:A1')
-xlswrite(filename,gear_ratio,'B1:B1')
-xlswrite(filename,t(1,(i-1)),'C1:C1')
 
+time  = clock;
+exportTime = [num2str(time(1,2)) '/' num2str(time(1,3)) '/' num2str(time(1,1))];
+
+exportData = [cellstr(exportTime),cellstr(TSCurveFile),cellstr(vehicleProfile),gear_ratio,t(1,(i-1))];
+
+[success,message] = xlsappend(filename,exportData,'Sheet1');
+
+if success
+    fprintf('append sucessful to %s \n',filename);
+else
+    fprintf('append unsucessful to %s \n',filename);
+end
