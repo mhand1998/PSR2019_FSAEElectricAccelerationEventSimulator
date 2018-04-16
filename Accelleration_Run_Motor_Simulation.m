@@ -185,8 +185,6 @@ exportTime = [num2str(time(1,2)) '/' num2str(time(1,3)) '/' num2str(time(1,1))];
 exportData = [cellstr(exportTime),cellstr(TSCurveFile),cellstr(vehicleProfile),gear_ratio,t(1,(i-1))];
 
 [success,message] = xlsappend(filename,exportData,'Sheet1');
-%xlsappend(filename,gear_ratio,'Sheet1');
-%xlsappend(filename,t(1,(i-1)),'Sheet1');
 
 if success
     fprintf('append sucessful to %s \n',filename);
