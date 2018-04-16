@@ -33,9 +33,12 @@ switch currentAnswer
         delimiter = 1;
         torque_constant = str2double(torque_constant);
     case 'No'
-        CTCurveFile = uigetfile('','Slect Motor Current vs Torque','*.csv');
-        motorCurrentCurve = csvread(TSCurveFile);
-        delimiter = 2;
+        %CTCurveFile = uigetfile('','Slect Motor Current vs Torque','*.csv');
+        %motorCurrentCurve = csvread(TSCurveFile);
+        %delimiter = 2;
+        torque_constant = inputdlg('Enter Torque Constant[Nm/A rms]');
+        delimiter = 1;
+        torque_constant = str2double(torque_constant);
 end
 
 BackEMF_constant = inputdlg('Enter Back EMF Constant [RPM/V rms]');
