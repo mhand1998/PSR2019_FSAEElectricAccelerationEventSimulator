@@ -2,10 +2,10 @@
 Electric Car Accelleration Event Simulation
 Author:Michael Hand
 Started: 3/5/17
-This file is subject to the terms and conditions defined in
- * file 'LICENSE.txt', which is part of this source code package.
+This file is subject to the terms and conditions defined in file 'LICENSE.txt', which is part of this source code package.
 %}
-clear
+
+
 %%
 clc
 close
@@ -20,7 +20,7 @@ load(fullfile(PathName,vehicleProfile))
 %Load Motor Torque Vs Speed Curve
 
 [TSCurveFile,PathName] = uigetfile('','Slect Motor Torque vs Speed Curve','*.csv');  
-motor = csvread(fullfile(PathName,TSCurveFile);
+motor = csvread(fullfile(PathName,TSCurveFile));
 
 %%
 
@@ -33,9 +33,12 @@ switch currentAnswer
         delimiter = 1;
         torque_constant = str2double(torque_constant);
     case 'No'
-        CTCurveFile = uigetfile('','Slect Motor Current vs Torque','*.csv');
-        motorCurrentCurve = csvread(TSCurveFile);
-        delimiter = 2;
+        %CTCurveFile = uigetfile('','Slect Motor Current vs Torque','*.csv');
+        %motorCurrentCurve = csvread(TSCurveFile);
+        %delimiter = 2;
+        torque_constant = inputdlg('Enter Torque Constant[Nm/A rms]');
+        delimiter = 1;
+        torque_constant = str2double(torque_constant);
 end
 
 BackEMF_constant = inputdlg('Enter Back EMF Constant [RPM/V rms]');
@@ -45,8 +48,14 @@ winding_resistance = str2double(winding_resistance);
 peak_full_load_speed = inputdlg('Enter Peak Speed [RPM]');
 peak_full_load_speed = str2double(peak_full_load_speed);
 
+%%
+%Load Motor Profile
+
+[motorProfile,PathName] = uigetfile('','Load Motor Profile','*.mat');
+load(fullfile(PathName,motorProfile))
 
 %%
+cd C:\Users\Michael\Documents\GitHub\FSAE_Electric_Acceleration_Event_Simulator
 
 gear_ratio = 3.80; %[] parameter of powertrain
 
@@ -167,10 +176,17 @@ xlabel('Time (sec)')
 ylabel('Accumulator Power(W)')
 
 %%
-i = i + 1;
-
 filename = 'MotorSimulationData.xls';
-xlswrite(filename,cellstr(TSCurveFile),'A1:A1')
-xlswrite(filename,gear_ratio,'B1:B1')
-xlswrite(filename,t(1,(i-1)),'C1:C1')
 
+time  = clock;
+exportTime = [num2str(time(1,2)) '/' num2str(time(1,3)) '/' num2str(time(1,1))];
+
+exportData = [cellstr(exportTime),cellstr(TSCurveFile),cellstr(vehicleProfile),gear_ratio,t(1,(i-1))];
+
+[success,message] = xlsappend(filename,exportData,'Sheet1');
+
+if success
+    fprintf('append sucessful to %s \n',filename);
+else
+    fprintf('append unsucessful to %s \n',filename);
+end
