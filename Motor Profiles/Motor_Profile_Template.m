@@ -4,6 +4,9 @@
 motor = csvread(fullfile(PathName,TSCurveFile));
 
 %Enter Motor Electrical Data
+clc
+close
+clear
 
 currentAnswer = questdlg('Is Current vs. Torque Linear?');
 switch currentAnswer
@@ -27,7 +30,8 @@ winding_resistance = str2double(winding_resistance);
 peak_full_load_speed = inputdlg('Enter Peak Speed [RPM]');
 peak_full_load_speed = str2double(peak_full_load_speed);
 
-TSCurveFileRoot = erase(TSCurveFile,'.csv');
-MotorProfileName = strcat(TSCurveFileRoot,'.mat');
+MotorProfileRoot = inputdlg('Enter File Name');
+MotorProfileRoot = MotorProfileRoot{1};
+MotorProfileName = strcat(MotorProfileRoot,'.mat');
 
 save(MotorProfileName);
