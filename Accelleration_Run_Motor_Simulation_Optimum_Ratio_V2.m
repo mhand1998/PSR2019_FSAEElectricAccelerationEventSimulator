@@ -9,18 +9,15 @@ This file is subject to the terms and conditions defined in file 'LICENSE.txt', 
 %%
 clc
 close
+clear
 
 %Load Vehicle Profile
 
 [vehicleProfile,PathName] = uigetfile('','Load Vehcile Profile','*.mat');
 load(fullfile(PathName,vehicleProfile))
 
-%%
-
-%Load Motor Torque Vs Speed Curve
-
-[TSCurveFile,PathName] = uigetfile('','Slect Motor Torque vs Speed Curve','*.csv');  
-motor = csvread(fullfile(PathName,TSCurveFile));
+mCar = m;
+clear m;
 
 %%
 %Load Motor Profile
@@ -29,16 +26,23 @@ motor = csvread(fullfile(PathName,TSCurveFile));
 load(fullfile(PathName,motorProfile))
 
 %%
+%Set Up Optimisor
+gear_ratio_array = [];
 
-gear_ratio_max = 5; 
-gear_ratio_min = 3;
-test_interval = .05;
+%gear_ratio_max = 3; 
+%gear_ratio_min = 7;
+%test_interval = .05;
 
-gear_ratio_array = [gear_ratio_min:test_interval:gear_ratio_max];
+gear_ratio_array = 3:.05:8; %min ratio: step size: max ratio
 
 
 %%
+close
+
 drag_strip_length = 75; %[m} distance for acell run
+times = [];
+
+m = mCar+motorMass+controllerMass;
 
 for j = 1:numel(gear_ratio_array)
 
@@ -47,6 +51,8 @@ power_limited = false;
 wcir = wdia*pi;
 s = zeros(1,2);     %[m] position
 v = 0;              %[m/s] velocity
+vars = {'t','a','battery_draw_power','current','EMF','f_motor','f_net','f_total_drag','f_wheel_actual','f_wheel_max','motor_rpm','motor_torque','power',};
+clear(vars{:})
 t_increment = .001; %[sec] dt for simulation loop
 i = 1;              %[] counter
 

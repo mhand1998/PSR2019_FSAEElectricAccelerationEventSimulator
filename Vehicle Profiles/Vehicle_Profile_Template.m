@@ -1,3 +1,7 @@
+clc
+close
+clear   %crtical to only get relevant variables in vehicle profile
+
 %Fill in the variables below
 
 m = ;                    %mass [kg]
